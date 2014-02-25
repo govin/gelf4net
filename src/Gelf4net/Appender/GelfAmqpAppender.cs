@@ -53,10 +53,10 @@ namespace gelf4net.Appender
             {
                 var model = conn.CreateModel();
                 model.ExchangeDeclare("sendExchange", ExchangeType.Direct);
-                model.QueueDeclare(RemoteQueue, true, true, true, null);
+                model.QueueDeclare(RemoteQueue, true, false, false, null);
                 model.QueueBind(RemoteQueue, "sendExchange", "key");
                 byte[] messageBodyBytes = message;
-                model.BasicPublish(RemoteQueue, "key", null, messageBodyBytes);
+                model.BasicPublish("sendExchange", "key", null, messageBodyBytes);
             }
         }
     }
