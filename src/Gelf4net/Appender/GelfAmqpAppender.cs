@@ -20,7 +20,15 @@ namespace gelf4net.Appender
             Encoding = Encoding.UTF8;
             RemoteAddress = "127.0.0.1";
             RemotePort = 5672;
+            RemoteExchange = "sendExchange";
+            RemoteExchangeKey = "key";
+            RemoteExchangeType = ExchangeType.Direct;
+            RemoteExchangeDurable = true;
+            RemoteExchangeAutoDelete = false;
             RemoteQueue = "TestQueue";
+            RemoteQueueDurable = true;
+            RemoteQueueExclusive = false;
+            RemoteQueueAutoDelete = false;
             VirtualHost = "/";
             Username = "guest";
             Password = "guest";
@@ -30,7 +38,15 @@ namespace gelf4net.Appender
         protected ConnectionFactory ConnectionFactory { get; set; }
         public string RemoteAddress { get; set; }
         public int RemotePort { get; set; }
+        public string RemoteExchange { get; set; }
+        public string RemoteExchangeKey { get; set; }
+        public string RemoteExchangeType { get; set; }
+        public bool RemoteExchangeDurable { get; set; }
+        public bool RemoteExchangeAutoDelete { get; set; }
         public string RemoteQueue { get; set; }
+        public bool RemoteQueueDurable { get; set; }
+        public bool RemoteQueueExclusive { get; set; }
+        public bool RemoteQueueAutoDelete { get; set; }
         public string VirtualHost { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
@@ -90,9 +106,9 @@ namespace gelf4net.Appender
             connection.ConnectionShutdown += ConnectionShutdown;
             model = connection.CreateModel();
 
-            model.ExchangeDeclare("sendExchange", ExchangeType.Direct);
-            model.QueueDeclare(RemoteQueue, true, false, false, null);
-            model.QueueBind(RemoteQueue, "sendExchange", "key");
+            model.ExchangeDeclare(RemoteExchange, RemoteExchangeType, RemoteExchangeDurable, RemoteExchangeAutoDelete, null);
+            model.QueueDeclare(RemoteQueue, RemoteQueueDurable, RemoteQueueExclusive, RemoteQueueAutoDelete, null);
+            model.QueueBind(RemoteQueue, RemoteExchange, RemoteExchangeKey);
         }
 
         void ConnectionShutdown(IConnection shutingDownConnection, ShutdownEventArgs reason)
