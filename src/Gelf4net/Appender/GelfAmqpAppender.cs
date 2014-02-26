@@ -28,6 +28,7 @@ namespace gelf4net.Appender
         public string Username { get; set; }
         public string Password { get; set; }
         public Encoding Encoding { get; set; }
+        public bool Gzip { get; set; }
 
         public override void ActivateOptions()
         {
@@ -53,8 +54,21 @@ namespace gelf4net.Appender
         {
             EnsureConnectionIsOpen();
 
-            byte[] message = RenderLoggingEvent(loggingEvent).GzipMessage(Encoding);
-            model.BasicPublish("sendExchange", "key", null, message);
+            byte[] message;
+
+            if (Gzip == false)
+            {
+                message = Encoding.GetBytes(RenderLoggingEvent(loggingEvent));
+                Console.WriteLine("No compression");
+            }
+            else
+            {
+                message = RenderLoggingEvent(loggingEvent).GzipMessage(Encoding);
+                Console.WriteLine("Compression");
+            }
+
+            byte[] messageBodyBytes = message;
+            model.BasicPublish("sendExchange", "key", null, messageBodyBytes);
         }
 
         public void EnsureConnectionIsOpen()
