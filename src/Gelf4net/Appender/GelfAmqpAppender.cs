@@ -18,6 +18,13 @@ namespace gelf4net.Appender
         public GelfAmqpAppender()
         {
             Encoding = Encoding.UTF8;
+            RemoteAddress = "127.0.0.1";
+            RemotePort = 5672;
+            RemoteQueue = "TestQueue";
+            VirtualHost = "/";
+            Username = "guest";
+            Password = "guest";
+            Gzip = true;
         }
 
         protected ConnectionFactory ConnectionFactory { get; set; }
