@@ -82,16 +82,23 @@ namespace gelf4net.Appender
             if (Gzip == false)
             {
                 message = Encoding.GetBytes(RenderLoggingEvent(loggingEvent));
-                Console.WriteLine("No compression");
             }
             else
             {
                 message = RenderLoggingEvent(loggingEvent).GzipMessage(Encoding);
-                Console.WriteLine("Compression");
             }
 
             byte[] messageBodyBytes = message;
-            model.BasicPublish("sendExchange", "key", null, messageBodyBytes);
+            try
+            {
+                model.BasicPublish("sendExchange", "key", null, messageBodyBytes);
+            }
+            catch (Exception e)
+            {
+                // Try to reconnect
+                OpenConnection();
+                model.BasicPublish("sendExchange", "key", null, messageBodyBytes);
+            }
         }
 
         public void EnsureConnectionIsOpen()
