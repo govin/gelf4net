@@ -1,14 +1,18 @@
+Changed AmqdAddapter, working now
+
 # gelf4net  
 gelf4net is a log4net adapter that formats logs to the [GELF][1] specification and makes it easy to send them over Udp or Amqp.
 
 ## Installation
 
+This does NOT yet apply to this version
 You can install the latest stable release using the nuget package `gelf4net`.  
 If you want to use the daily builds you can install the `gelf4net-ci` package.
 
 ## Configuration
 
 gelf4net gives you the ability to log messages either through Udp or Amqp.
+The amqpAddapter shows the default values, if you dont change them you can delete these lines.
 
 **Sample Configuration**
 
@@ -41,10 +45,20 @@ gelf4net gives you the ability to log messages either through Udp or Amqp.
 		<appender name="GelfAmqpAppender" type="Gelf4net.Appender.GelfAmqpAppender, Gelf4net">
 		  <remoteAddress value="127.0.0.1" />
 		  <remotePort value="5672" />
+		  <remoteExchange value="sendExchange" />
+		  <remoteExchangeKey value="key" />
+		  <remoteExchangeType value="Direct" />
+		  <remoteExchangeDurable value="true" />
+		  <remoteExchangeAutoDelete value="false" />
+		  <remoteQueue value="TestQueue" />
+		  <remoteQueueDurable value="true" />
+		  <remoteQueueExclusive value="false" />
+		  <remoteQueueAutoDelete value="false" />
 		  <username value="guest" />
 		  <password value="guest" />
 		  <virtualHost value="/" />
-		  <remoteQueue value="queue1" />
+		  <gzip value="true" />
+		  
 		  <layout type="Gelf4net.Layout.GelfLayout, Gelf4net">
 			<param name="AdditionalFields" value="app:RandomSentence,version:1.0,Level:%level" />
 			<param name="Facility" value="RandomPhrases" />
